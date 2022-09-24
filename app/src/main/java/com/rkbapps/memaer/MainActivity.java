@@ -2,12 +2,19 @@ package com.rkbapps.memaer;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -29,6 +36,8 @@ import com.bumptech.glide.request.target.ViewTarget;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,12 +46,11 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar loader;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setTitle("Meme R");
-
         loadMeme();
     }
 
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         loader.setVisibility(View.VISIBLE);
-// Request a string response from the provided URL.
+        // Request a string response from the provided URL.
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -83,20 +91,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
 
     }
 
     public void shareMeme(View view) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
+        intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Hey see this Meme");
-        Intent.createChooser(intent, "Share Using...");
+        Intent.createChooser(intent, "Share via.");
         startActivity(intent);
     }
-
     public void nextMeme(View view) {
         loadMeme();
     }
